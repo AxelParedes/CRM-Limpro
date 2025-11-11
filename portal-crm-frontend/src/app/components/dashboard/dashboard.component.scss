@@ -1,0 +1,75 @@
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid #e3e6f0;
+  font-weight: 600;
+  padding: 15px 20px;
+}
+
+.lead-stage {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #dee2e6;
+}
+
+.lead-stage.active {
+  background: #e3f2fd;
+  border-left-color: #2196f3;
+}
+
+.stats-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-top: 5px;
+}
+
+.task-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.vacation-item {
+  background: #fff3cd;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 3px solid #ffc107;
+}
+
+.pipeline-stages {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.campaign-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.task-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.lead-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  
+  h6, small {
+    color: white !important;
+  }
+}

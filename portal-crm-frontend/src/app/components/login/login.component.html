@@ -1,0 +1,110 @@
+<div class="login-container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-4">
+      <div class="card login-card shadow">
+        <div class="card-body p-5">
+          
+          <!-- Logo y Título -->
+          <div class="text-center mb-4">
+            <div class="login-logo mb-3">
+              <i class="bi bi-building fs-1 text-primary"></i>
+            </div>
+            <h2 class="login-title">Portal CRM</h2>
+            <p class="text-muted">Inicia sesión en tu cuenta</p>
+          </div>
+
+          <!-- Formulario de Login -->
+          <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+            
+            <!-- Usuario -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Usuario</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="username"
+                  name="username"
+                  [(ngModel)]="credentials.username"
+                  placeholder="Ingresa tu usuario"
+                  required>
+              </div>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input 
+                  [type]="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  id="password"
+                  name="password"
+                  [(ngModel)]="credentials.password"
+                  placeholder="Ingresa tu contraseña"
+                  required>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  (click)="togglePassword()">
+                  <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Recordarme -->
+            <div class="mb-3 form-check">
+              <input 
+                type="checkbox" 
+                class="form-check-input" 
+                id="rememberMe"
+                [(ngModel)]="credentials.rememberMe"
+                name="rememberMe">
+              <label class="form-check-label" for="rememberMe">
+                Recordar mis datos
+              </label>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+              {{ errorMessage }}
+              <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+            </div>
+
+            <!-- Botón de login -->
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100 py-2 mb-3"
+              [disabled]="!loginForm.form.valid || isLoading">
+              
+              <span *ngIf="!isLoading">
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Iniciar Sesión
+              </span>
+              
+              <span *ngIf="isLoading">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Iniciando sesión...
+              </span>
+            </button>
+
+            <!-- Credenciales de demo -->
+            <div class="demo-credentials text-center">
+              <small class="text-muted">
+                Usuario demo: <strong>admin</strong> / Contraseña: <strong>admin</strong>
+              </small>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

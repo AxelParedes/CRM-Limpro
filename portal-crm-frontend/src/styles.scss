@@ -1,0 +1,31 @@
+/* Importar Bootstrap */
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Estilos globales */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Asegurar que el contenido principal no se oculte */
+.main-content {
+  margin-left: 250px; /* Ancho del sidebar */
+  width: calc(100% - 250px);
+  min-height: 100vh;
+}
+
+/* Para móviles */
+@media (max-width: 767.98px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Estilos para el sidebar */
+.sidebar-container {
+  padding: 0;
+}
