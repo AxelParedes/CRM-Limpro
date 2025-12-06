@@ -1,0 +1,120 @@
+.projects-container {
+  padding: 20px 0;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid #e3e6f0;
+  font-weight: 600;
+  padding: 15px 20px;
+}
+
+// Tarjetas de proyecto
+.project-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  }
+}
+
+.project-card .card-footer {
+  border-top: 1px solid #e3e6f0;
+  padding: 0.75rem 1rem;
+  
+  .btn-group {
+    .btn {
+      flex: 1;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Indicadores de bordes para las tarjetas de estadísticas
+.border-left-primary { border-left: 0.25rem solid #4e73df !important; }
+.border-left-success { border-left: 0.25rem solid #1cc88a !important; }
+.border-left-info { border-left: 0.25rem solid #36b9cc !important; }
+.border-left-warning { border-left: 0.25rem solid #f6c23e !important; }
+.border-left-danger { border-left: 0.25rem solid #e74a3b !important; }
+.border-left-secondary { border-left: 0.25rem solid #858796 !important; }
+
+// Estilos para la tabla
+.table th {
+  border-top: none;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 1rem 0.75rem;
+}
+
+// Progreso
+.progress {
+  border-radius: 10px;
+  background-color: #e9ecef;
+  
+  .progress-bar {
+    border-radius: 10px;
+  }
+}
+
+// Badges personalizados
+.badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  font-weight: 600;
+}
+
+// Estado de proyectos atrasados
+.border-left-danger {
+  border-left-color: #e74a3b !important;
+}
+
+.table-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  
+  &:hover {
+    background-color: rgba(255, 193, 7, 0.2) !important;
+  }
+}
+
+// Botones de vista
+.btn-group-sm .btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .project-card {
+    margin-bottom: 1rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .btn-group-sm > .btn {
+    padding: 0.125rem 0.25rem;
+  }
+  
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+}

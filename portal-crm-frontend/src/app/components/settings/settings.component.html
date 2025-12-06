@@ -1,0 +1,463 @@
+<div class="settings-container">
+  
+  <!-- Header de la página -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 text-gray-800 mb-1">Configuración del Sistema</h1>
+      <p class="text-muted mb-0">Personaliza y configura tu portal CRM</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary btn-sm" (click)="saveSettings()" [disabled]="isSaving">
+        <i class="bi bi-save me-1"></i> 
+        <span *ngIf="!isSaving">Guardar Cambios</span>
+        <span *ngIf="isSaving">Guardando...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs de configuración -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <ul class="nav nav-tabs mb-4" id="settingsTabs">
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'general'" (click)="activeTab = 'general'">
+            <i class="bi bi-gear me-1"></i> General
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">
+            <i class="bi bi-people me-1"></i> Usuarios
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'notifications'" (click)="activeTab = 'notifications'">
+            <i class="bi bi-bell me-1"></i> Notificaciones
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'security'" (click)="activeTab = 'security'">
+            <i class="bi bi-shield-lock me-1"></i> Seguridad
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'integrations'" (click)="activeTab = 'integrations'">
+            <i class="bi bi-puzzle me-1"></i> Integraciones
+          </button>
+        </li>
+      </ul>
+
+      <!-- Cargando -->
+      <div *ngIf="isLoading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando configuración...</p>
+      </div>
+
+      <!-- Contenido de las tabs -->
+      <div *ngIf="!isLoading">
+        
+        <!-- Pestaña General -->
+        <div *ngIf="activeTab === 'general'">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">Información de la Empresa</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Nombre de la Empresa</label>
+                    <input type="text" class="form-control" [(ngModel)]="settings.company.name" placeholder="Ej: Limpro Comercial">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Logo URL</label>
+                    <input type="text" class="form-control" [(ngModel)]="settings.company.logoUrl" placeholder="https://ejemplo.com/logo.png">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Moneda</label>
+                    <select class="form-select" [(ngModel)]="settings.company.currency">
+                      <option value="MXN">Peso Mexicano (MXN)</option>
+                      <option value="USD">Dólar Americano (USD)</option>
+                      <option value="EUR">Euro (EUR)</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Zona Horaria</label>
+                    <select class="form-select" [(ngModel)]="settings.company.timezone">
+                      <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                      <option value="UTC">UTC</option>
+                      <option value="America/New_York">Nueva York (GMT-5)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">Preferencias del Sistema</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Tema</label>
+                    <select class="form-select" [(ngModel)]="settings.preferences.theme">
+                      <option value="light">Claro</option>
+                      <option value="dark">Oscuro</option>
+                      <option value="auto">Automático</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Idioma</label>
+                    <select class="form-select" [(ngModel)]="settings.preferences.language">
+                      <option value="es">Español</option>
+                      <option value="en">Inglés</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="notificationsEnabled" [(ngModel)]="settings.preferences.notificationsEnabled">
+                      <label class="form-check-label" for="notificationsEnabled">
+                        Notificaciones por correo
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="autoSave" [(ngModel)]="settings.preferences.autoSave">
+                      <label class="form-check-label" for="autoSave">
+                        Guardado automático
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Elementos por página</label>
+                    <input type="number" class="form-control" [(ngModel)]="settings.preferences.itemsPerPage" min="5" max="100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Usuarios -->
+        <div *ngIf="activeTab === 'users'">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h6 class="mb-0">Gestión de Usuarios</h6>
+              <button class="btn btn-primary btn-sm" (click)="openNewUserModal()">
+                <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Rol</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of users">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="user-avatar bg-primary text-white rounded-circle me-2">
+                            {{ getInitials(user.nombre) }}
+                          </div>
+                          <span>{{ user.username }}</span>
+                        </div>
+                      </td>
+                      <td>{{ user.nombre }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                          {{ getRoleLabel(user.role) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge" [ngClass]="user.activo ? 'bg-success' : 'bg-secondary'">
+                          {{ user.activo ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="btn-group btn-group-sm">
+                          <button class="btn btn-outline-primary" (click)="toggleUserStatus(user)">
+                            <i class="bi" [class.bi-toggle-off]="!user.activo" [class.bi-toggle-on]="user.activo"></i>
+                          </button>
+                          <button class="btn btn-outline-info" (click)="editUser(user)">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-outline-danger" (click)="deleteUser(user)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Notificaciones -->
+        <div *ngIf="activeTab === 'notifications'">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">Configuración de Notificaciones</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="form-check form-switch mb-2">
+                      <input class="form-check-input" type="checkbox" id="emailNotifications" [(ngModel)]="settings.notifications.email.enabled">
+                      <label class="form-check-label" for="emailNotifications">
+                        Notificaciones por Email
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <h6 class="mb-3">Eventos a notificar</h6>
+                  <div class="mb-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="newClient" [(ngModel)]="settings.notifications.events.newClient">
+                      <label class="form-check-label" for="newClient">
+                        Nuevo cliente registrado
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="taskDue" [(ngModel)]="settings.notifications.events.taskDue">
+                      <label class="form-check-label" for="taskDue">
+                        Tareas próximas a vencer
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="projectUpdate" [(ngModel)]="settings.notifications.events.projectUpdate">
+                      <label class="form-check-label" for="projectUpdate">
+                        Actualizaciones de proyectos
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="salesReport" [(ngModel)]="settings.notifications.events.salesReport">
+                      <label class="form-check-label" for="salesReport">
+                        Reportes de ventas semanales
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Frecuencia de Reportes</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Reporte Semanal</label>
+                    <select class="form-select" [(ngModel)]="settings.notifications.reports.weekly">
+                      <option value="monday">Lunes</option>
+                      <option value="tuesday">Martes</option>
+                      <option value="wednesday">Miércoles</option>
+                      <option value="thursday">Jueves</option>
+                      <option value="friday">Viernes</option>
+                      <option value="disabled">Deshabilitado</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Reporte Mensual</label>
+                    <select class="form-select" [(ngModel)]="settings.notifications.reports.monthly">
+                      <option value="1">Día 1 del mes</option>
+                      <option value="15">Día 15 del mes</option>
+                      <option value="last">Último día del mes</option>
+                      <option value="disabled">Deshabilitado</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Hora de envío</label>
+                    <input type="time" class="form-control" [(ngModel)]="settings.notifications.reports.time">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Seguridad -->
+        <div *ngIf="activeTab === 'security'">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">Autenticación y Acceso</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="form-check form-switch mb-2">
+                      <input class="form-check-input" type="checkbox" id="twoFactor" [(ngModel)]="settings.security.twoFactorEnabled">
+                      <label class="form-check-label" for="twoFactor">
+                        Autenticación de dos factores
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Tiempo de sesión (minutos)</label>
+                    <input type="number" class="form-control" [(ngModel)]="settings.security.sessionTimeout" min="5" max="1440">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Intentos fallidos permitidos</label>
+                    <input type="number" class="form-control" [(ngModel)]="settings.security.maxLoginAttempts" min="1" max="10">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Bloquear IP después de intentos</label>
+                    <input type="number" class="form-control" [(ngModel)]="settings.security.ipBlockDuration" min="1" max="24">
+                    <small class="text-muted">horas</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Cambiar Contraseña</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Contraseña actual</label>
+                    <input type="password" class="form-control" [(ngModel)]="passwordForm.currentPassword">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Nueva contraseña</label>
+                    <input type="password" class="form-control" [(ngModel)]="passwordForm.newPassword">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Confirmar nueva contraseña</label>
+                    <input type="password" class="form-control" [(ngModel)]="passwordForm.confirmPassword">
+                  </div>
+                  <button class="btn btn-primary" (click)="changePassword()" [disabled]="!isPasswordValid()">
+                    <i class="bi bi-key me-1"></i> Cambiar Contraseña
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pestaña Integraciones -->
+        <div *ngIf="activeTab === 'integrations'">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h6 class="mb-0">API y Webhooks</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">API Key</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" [value]="settings.integrations.apiKey" readonly>
+                      <button class="btn btn-outline-secondary" type="button" (click)="copyApiKey()">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" type="button" (click)="regenerateApiKey()">
+                        <i class="bi bi-arrow-repeat"></i>
+                      </button>
+                    </div>
+                    <small class="text-muted">Generada: {{ getApiKeyDate() }}</small>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Webhook URL</label>
+                    <input type="text" class="form-control" [(ngModel)]="settings.integrations.webhookUrl" placeholder="https://tusistema.com/webhook">
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="webhookEnabled" [(ngModel)]="settings.integrations.webhookEnabled">
+                      <label class="form-check-label" for="webhookEnabled">
+                        Habilitar webhooks
+                      </label>
+                    </div>
+                  </div>
+                  <button class="btn btn-outline-primary btn-sm" (click)="testWebhook()">
+                    <i class="bi bi-play-circle me-1"></i> Probar Webhook
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Email SMTP</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Servidor SMTP</label>
+                    <input type="text" class="form-control" [(ngModel)]="settings.integrations.smtp.host" placeholder="smtp.gmail.com">
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <label class="form-label">Puerto</label>
+                      <input type="text" class="form-control" [(ngModel)]="settings.integrations.smtp.port" placeholder="587">
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-switch pt-4">
+                        <input class="form-check-input" type="checkbox" id="smtpSSL" [(ngModel)]="settings.integrations.smtp.ssl">
+                        <label class="form-check-label" for="smtpSSL">SSL/TLS</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-control" [(ngModel)]="settings.integrations.smtp.username" placeholder="tu@email.com">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" [(ngModel)]="settings.integrations.smtp.password" placeholder="••••••••">
+                  </div>
+                  <button class="btn btn-outline-primary btn-sm" (click)="testEmailConnection()">
+                    <i class="bi bi-envelope me-1"></i> Probar Conexión
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal simple para notificaciones -->
+  <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ notificationTitle }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {{ notificationMessage }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
