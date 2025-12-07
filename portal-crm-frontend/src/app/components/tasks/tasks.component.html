@@ -1,0 +1,293 @@
+<div class="tasks-container">
+  
+  <!-- Header de la página -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 text-gray-800 mb-1">Gestión de Tareas</h1>
+      <p class="text-muted mb-0">Administra y sigue el progreso de todas las tareas</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-outline-primary btn-sm" (click)="exportTasks()">
+        <i class="bi bi-download me-1"></i> Exportar
+      </button>
+      <button class="btn btn-primary btn-sm" (click)="openNewTaskModal()">
+        <i class="bi bi-plus-circle me-1"></i> Nueva Tarea
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros y Búsqueda -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" [(ngModel)]="filters.estado" (change)="applyFilters()">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_progreso">En progreso</option>
+            <option value="completada">Completada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Prioridad</label>
+          <select class="form-select" [(ngModel)]="filters.prioridad" (change)="applyFilters()">
+            <option value="">Todas las prioridades</option>
+            <option value="urgente">Urgente</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Fecha vencimiento</label>
+          <input type="date" class="form-control" [(ngModel)]="filters.fecha_vencimiento" (change)="applyFilters()">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Buscar</label>
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Título o descripción..."
+              [(ngModel)]="filters.search"
+              (input)="applyFilters()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas de tareas -->
+  <div class="row mb-4">
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                Total
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.total || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-list-task fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Pendientes
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.pendientes || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-clock fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                En Progreso
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.en_progreso || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-arrow-clockwise fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                Completadas
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.completadas || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-check-circle fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                Vencidas
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.vencidas || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-exclamation-triangle fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-3">
+      <div class="card border-left-secondary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                Urgentes
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ taskStats.urgentes || 0 }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-fire fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de tareas -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h6 class="mb-0">Lista de Tareas</h6>
+      <span class="badge bg-primary">{{ filteredTasks.length }} tareas</span>
+    </div>
+    <div class="card-body p-0">
+      
+      <!-- Tabla de tareas -->
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="40">
+                <input type="checkbox" class="form-check-input" (change)="toggleSelectAll($event)">
+              </th>
+              <th>Tarea</th>
+              <th>Proyecto</th>
+              <th>Prioridad</th>
+              <th>Estado</th>
+              <th>Vence</th>
+              <th>Asignado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of filteredTasks" [class.table-warning]="isTaskOverdue(task)" [class.table-light]="task.estado === 'completada'">
+              <td>
+                <input type="checkbox" class="form-check-input" [checked]="selectedTasks.has(task.id)" (change)="toggleTaskSelection(task.id)">
+              </td>
+              <td>
+                <div>
+                  <div class="fw-bold task-title">{{ task.titulo }}</div>
+                  <small class="text-muted task-description">{{ (task.descripcion | slice:0:50) + (task.descripcion.length > 50 ? '...' : '') }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="badge bg-light text-dark">
+                  {{ task.proyecto_nombre || 'Proyecto #' + task.proyecto_id }}
+                </div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getPriorityBadgeClass(task.prioridad)">
+                  {{ getPriorityLabel(task.prioridad) }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getStatusBadgeClass(task.estado)">
+                  {{ getStatusLabel(task.estado) }}
+                </span>
+              </td>
+              <td>
+                <div [ngClass]="{'text-danger fw-bold': isTaskOverdue(task)}">
+                  {{ task.fecha_vencimiento | date:'dd/MM/yyyy' }}
+                </div>
+                <small class="text-muted" *ngIf="getDaysRemaining(task) !== null">
+                  {{ getDaysRemaining(task) }} días
+                </small>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="user-avatar bg-primary text-white rounded-circle me-2">
+                    {{ getInitials(task.asignado_nombre || 'Usuario') }}
+                  </div>
+                  <small>{{ task.asignado_nombre || 'Sin asignar' }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" title="Editar" (click)="editTask(task)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-info" title="Ver detalles" (click)="viewTaskDetails(task)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-success" title="Marcar completada" (click)="completeTask(task)" *ngIf="task.estado !== 'completada'">
+                    <i class="bi bi-check-circle"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" title="Eliminar" (click)="deleteTask(task)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sin tareas -->
+      <div *ngIf="filteredTasks.length === 0" class="text-center p-5">
+        <i class="bi bi-list-task fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No hay tareas que mostrar</p>
+        <button class="btn btn-primary btn-sm" (click)="openNewTaskModal()">
+          <i class="bi bi-plus-circle me-1"></i> Crear primera tarea
+        </button>
+      </div>
+
+      <!-- Acciones en lote -->
+      <div *ngIf="selectedTasks.size > 0" class="card-footer bg-light">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted">{{ selectedTasks.size }} tareas seleccionadas</span>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-outline-success btn-sm" (click)="completeSelectedTasks()">
+              <i class="bi bi-check-circle me-1"></i> Completar
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteSelectedTasks()">
+              <i class="bi bi-trash me-1"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

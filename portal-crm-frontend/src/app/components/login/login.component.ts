@@ -27,28 +27,24 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  onSubmit(): void {
-    if (this.isLoading) return;
+ onSubmit(): void {
+  if (this.isLoading) return;
 
-    this.isLoading = true;
-    this.errorMessage = '';
+  this.isLoading = true;
+  this.errorMessage = '';
 
-    // Simular delay de red
-    setTimeout(() => {
-      const success = this.authService.login(
-        this.credentials.username, 
-        this.credentials.password
-      );
-
-      if (success) {
+  this.authService.login(this.credentials.username, this.credentials.password)
+    .subscribe({
+      next: (response) => {
+        this.isLoading = false;
         this.router.navigate(['/dashboard']);
-      } else {
-        this.errorMessage = 'Usuario o contraseña incorrectos';
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.error || 'Error de conexión con el servidor';
       }
-      
-      this.isLoading = false;
-    }, 1000);
-  }
+    });
+}
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;

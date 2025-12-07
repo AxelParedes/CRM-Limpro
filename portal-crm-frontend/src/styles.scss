@@ -1,6 +1,6 @@
 /* Importar Bootstrap */
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import '../node_modules/bootstrap/scss/bootstrap';
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 /* Estilos globales */
 body {
@@ -12,7 +12,7 @@ body {
 
 /* Asegurar que el contenido principal no se oculte */
 .main-content {
-  margin-left: 250px; /* Ancho del sidebar */
+  margin-left: 250px;
   width: calc(100% - 250px);
   min-height: 100vh;
 }
@@ -23,9 +23,4 @@ body {
     margin-left: 0;
     width: 100%;
   }
-}
-
-/* Estilos para el sidebar */
-.sidebar-container {
-  padding: 0;
 }

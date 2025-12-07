@@ -1,0 +1,359 @@
+<div class="reports-container">
+  
+  <!-- Header de la página -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 text-gray-800 mb-1">Reportes y Análisis</h1>
+      <p class="text-muted mb-0">Métricas y estadísticas de tu negocio</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-outline-primary btn-sm" (click)="exportReport()">
+        <i class="bi bi-download me-1"></i> Exportar PDF
+      </button>
+      <button class="btn btn-primary btn-sm" (click)="refreshData()">
+        <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Rango de fecha</label>
+          <select class="form-select" [(ngModel)]="dateRange" (change)="updateReports()">
+            <option value="7d">Últimos 7 días</option>
+            <option value="30d">Últimos 30 días</option>
+            <option value="90d">Últimos 90 días</option>
+            <option value="1y">Último año</option>
+            <option value="custom">Personalizado</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Tipo de reporte</label>
+          <select class="form-select" [(ngModel)]="reportType" (change)="updateReports()">
+            <option value="ventas">Ventas</option>
+            <option value="clientes">Clientes</option>
+            <option value="proyectos">Proyectos</option>
+            <option value="rendimiento">Rendimiento</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Métrica principal</label>
+          <select class="form-select" [(ngModel)]="primaryMetric" (change)="updateReports()">
+            <option value="ingresos">Ingresos</option>
+            <option value="clientes">Nuevos clientes</option>
+            <option value="proyectos">Proyectos completados</option>
+            <option value="tasaConversion">Tasa de conversión</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Restablecer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs Principales -->
+  <div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                Ingresos Totales
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">${{ totalRevenue | number }}</div>
+              <div class="mt-2">
+                <span class="badge bg-success">
+                  <i class="bi bi-arrow-up me-1"></i>12.5%
+                </span>
+                <small class="text-muted ms-1">vs período anterior</small>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                Nuevos Clientes
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ newClients }}</div>
+              <div class="mt-2">
+                <span class="badge bg-success">
+                  <i class="bi bi-arrow-up me-1"></i>8.2%
+                </span>
+                <small class="text-muted ms-1">vs período anterior</small>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-people fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                Tasa de Conversión
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ conversionRate }}%</div>
+              <div class="mt-2">
+                <span class="badge bg-danger">
+                  <i class="bi bi-arrow-down me-1"></i>2.1%
+                </span>
+                <small class="text-muted ms-1">vs período anterior</small>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-graph-up fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Proyectos Activos
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ activeProjects }}</div>
+              <div class="mt-2">
+                <span class="badge bg-success">
+                  <i class="bi bi-arrow-up me-1"></i>15.3%
+                </span>
+                <small class="text-muted ms-1">vs período anterior</small>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-briefcase fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos y Métricas -->
+  <div class="row">
+    
+    <!-- Columna izquierda - Gráficos principales -->
+    <div class="col-lg-8">
+      
+      <!-- Gráfico de ingresos -->
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="mb-0">Ingresos Mensuales</h6>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary active">Mensual</button>
+            <button class="btn btn-outline-secondary">Trimestral</button>
+            <button class="btn btn-outline-secondary">Anual</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="revenue-chart-placeholder">
+            <div class="text-center p-5">
+              <i class="bi bi-bar-chart fa-3x text-muted mb-3"></i>
+              <p class="text-muted">Gráfico de ingresos se mostrará aquí</p>
+              <div class="revenue-stats">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="h5 text-primary">${{ currentMonthRevenue | number }}</div>
+                    <small class="text-muted">Este mes</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="h5 text-success">${{ lastMonthRevenue | number }}</div>
+                    <small class="text-muted">Mes anterior</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="h5 text-info">{{ revenueGrowth }}%</div>
+                    <small class="text-muted">Crecimiento</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas de clientes -->
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Distribución de Clientes</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="metric-card">
+                <h6 class="text-muted">Por Estado</h6>
+                <div class="metric-list">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Clientes Activos</span>
+                    <span class="badge bg-primary">{{ clientStatus.active }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Prospectos</span>
+                    <span class="badge bg-warning">{{ clientStatus.prospect }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>Inactivos</span>
+                    <span class="badge bg-secondary">{{ clientStatus.inactive }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="metric-card">
+                <h6 class="text-muted">Por Industria</h6>
+                <div class="metric-list">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Tecnología</span>
+                    <span class="badge bg-info">{{ industryStats.technology }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Consultoría</span>
+                    <span class="badge bg-success">{{ industryStats.consulting }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>Manufactura</span>
+                    <span class="badge bg-warning">{{ industryStats.manufacturing }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Columna derecha - Métricas secundarias -->
+    <div class="col-lg-4">
+      
+      <!-- Proyectos por estado -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0">Proyectos por Estado</h6>
+        </div>
+        <div class="card-body">
+          <div class="project-metrics">
+            <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
+              <div class="d-flex align-items-center">
+                <div class="status-indicator bg-success me-2"></div>
+                <span>Completados</span>
+              </div>
+              <span class="fw-bold">{{ projectStatus.completed }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
+              <div class="d-flex align-items-center">
+                <div class="status-indicator bg-primary me-2"></div>
+                <span>En progreso</span>
+              </div>
+              <span class="fw-bold">{{ projectStatus.inProgress }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
+              <div class="d-flex align-items-center">
+                <div class="status-indicator bg-warning me-2"></div>
+                <span>Pendientes</span>
+              </div>
+              <span class="fw-bold">{{ projectStatus.pending }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center p-2">
+              <div class="d-flex align-items-center">
+                <div class="status-indicator bg-danger me-2"></div>
+                <span>Retrasados</span>
+              </div>
+              <span class="fw-bold">{{ projectStatus.delayed }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasa de conversión -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h6 class="mb-0">Tasa de Conversión</h6>
+        </div>
+        <div class="card-body">
+          <div class="conversion-metrics text-center">
+            <div class="conversion-circle mx-auto mb-3">
+              <span class="conversion-percent">{{ conversionRate }}%</span>
+            </div>
+            <div class="row text-center">
+              <div class="col-6">
+                <div class="h6 text-success">{{ leads }}</div>
+                <small class="text-muted">Leads</small>
+              </div>
+              <div class="col-6">
+                <div class="h6 text-primary">{{ convertedLeads }}</div>
+                <small class="text-muted">Convertidos</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reportes rápidos -->
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Reportes Rápidos</h6>
+        </div>
+        <div class="card-body">
+          <div class="quick-reports">
+            <button class="btn btn-outline-primary btn-sm w-100 mb-2" (click)="generateClientReport()">
+              <i class="bi bi-people me-1"></i> Reporte de Clientes
+            </button>
+            
+            <!-- BOTÓN MODIFICADO - Reporte de Ventas con PDF desde BD -->
+            <button 
+              class="btn btn-outline-success btn-sm w-100 mb-2" 
+              (click)="generateSalesReport()"
+              [disabled]="generatingPDF">
+              <i class="bi bi-currency-dollar me-1"></i> 
+              {{ generatingPDF ? 'Generando PDF...' : 'Reporte de Ventas' }}
+            </button>
+            
+            <button class="btn btn-outline-info btn-sm w-100 mb-2" (click)="generatePerformanceReport()">
+              <i class="bi bi-graph-up me-1"></i> Rendimiento
+            </button>
+            <button class="btn btn-outline-warning btn-sm w-100" (click)="generateProjectReport()">
+              <i class="bi bi-briefcase me-1"></i> Proyectos
+            </button>
+            
+            <!-- Mensaje de estado del PDF -->
+            <div *ngIf="pdfMessage" class="mt-2">
+              <small [class]="pdfMessage.includes('Error') ? 'text-danger' : 'text-success'">
+                {{ pdfMessage }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
